@@ -12,6 +12,10 @@ public class Period {
         this.endDate = endDate.withHour(23).withMinute(59).withSecond(59);
     }
 
+    public Period(String startDate, String endDate) {
+
+    }
+
     public LocalDateTime getStartDate() {
         return startDate;
     }
