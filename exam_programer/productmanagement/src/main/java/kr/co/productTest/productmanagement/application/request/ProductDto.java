@@ -1,6 +1,7 @@
 package kr.co.productTest.productmanagement.application.request;
 
 import jakarta.validation.constraints.NotNull;
+import kr.co.productTest.productmanagement.core.feature.Product;
 
 import java.util.Objects;
 
@@ -51,6 +52,41 @@ public class ProductDto {
         this.name = name;
         this.price = price;
         this.amount = amount;
+    }
+
+    /**
+     * 4가지 필드를 setter로 넣어줌
+     * static 메서드가 아닌 인스턴스 메서드로 동일한 기능을 수행
+     * @param productDto
+     * @return
+     */
+    public static Product toEntity(ProductDto productDto) {
+        Product product = new Product(
+            productDto.getId(),
+            productDto.getName(),
+            productDto.getPrice(),
+            productDto.getAmount()
+        );
+
+        return product;
+    }
+
+    /**
+     * id를 제외한 세가지 필드로 생성자로 생성
+     * @param product
+     * @return
+     */
+    public static ProductDto toDto(Product product) {
+        ProductDto productDto = new ProductDto(
+                product.getId(),
+                product.getName(),
+                product.getPrice(),
+                product.getAmount()
+        );
+
+        productDto.setId(product.getId());
+
+        return productDto;
     }
 
     @Override
