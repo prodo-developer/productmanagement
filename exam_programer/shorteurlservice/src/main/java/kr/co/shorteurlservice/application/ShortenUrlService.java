@@ -5,6 +5,7 @@ import kr.co.shorteurlservice.api.domain.ShortenUrlRepository;
 import kr.co.shorteurlservice.application.request.ShortenUrlCreateRequestDto;
 import kr.co.shorteurlservice.application.request.ShortenUrlInformationDto;
 import kr.co.shorteurlservice.application.response.ShortenUrlCreateResponseDto;
+import kr.co.shorteurlservice.core.aop.endpoint.exception.NotFoundShortenUrlException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -34,6 +35,10 @@ public class ShortenUrlService {
 
     public ShortenUrlInformationDto getShortenUrlInfomationByShortenUrlKey(String shortenUrlKey) {
         ShortenUrl shortenUrl = shortenUrlRepository.findShortenUrlByShortenUrlKey(shortenUrlKey);
+
+        if(null == shortenUrl)
+            throw new NotFoundShortenUrlException();
+
         ShortenUrlInformationDto shortenUrlInformationDto = new ShortenUrlInformationDto(shortenUrl);
         return shortenUrlInformationDto;
     }
@@ -46,6 +51,9 @@ public class ShortenUrlService {
      */
     public String getOriginalUrlByShortenUrlKey(String shortenUrlKey) {
         ShortenUrl shortenUrl = shortenUrlRepository.findShortenUrlByShortenUrlKey(shortenUrlKey);
+
+        if(null == shortenUrl)
+            throw new NotFoundShortenUrlException();
 
         shortenUrl.increaseRedirectCount();
         shortenUrlRepository.saveShortenUrl(shortenUrl);
