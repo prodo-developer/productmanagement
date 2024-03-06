@@ -37,4 +37,21 @@ public class ShortenUrlService {
         ShortenUrlInformationDto shortenUrlInformationDto = new ShortenUrlInformationDto(shortenUrl);
         return shortenUrlInformationDto;
     }
+
+    /**
+     * 단축 URL 리다이렉트
+     * 단축퇸 URL -> 원본 URL로 "리다이렉트 될 때마다 카운트 증가"
+     * @param shortenUrlKey
+     * @return
+     */
+    public String getOriginalUrlByShortenUrlKey(String shortenUrlKey) {
+        ShortenUrl shortenUrl = shortenUrlRepository.findShortenUrlByShortenUrlKey(shortenUrlKey);
+
+        shortenUrl.increaseRedirectCount();
+        shortenUrlRepository.saveShortenUrl(shortenUrl);
+
+        String originalUrl = shortenUrl.getOriginalUrl();
+
+        return originalUrl;
+    }
 }

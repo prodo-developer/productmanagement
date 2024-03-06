@@ -6,8 +6,13 @@ import kr.co.shorteurlservice.application.request.ShortenUrlCreateRequestDto;
 import kr.co.shorteurlservice.application.request.ShortenUrlInformationDto;
 import kr.co.shorteurlservice.application.response.ShortenUrlCreateResponseDto;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.net.URI;
+import java.net.URISyntaxException;
 
 @RestController
 public class ShortenUrlController {
@@ -30,11 +35,20 @@ public class ShortenUrlController {
 
     /**
      * 단축 URL 리다이렉트
+     * 서비스에서 가져온 originalUrl을 응답 헤더의 Location으로 설정해 주고
+     * 상태 코드를 301로 변경해 주는 두 가지 동작을 해야 한다.
      * @return
      */
-    @RequestMapping(value = "/{shorentUrlKey}", method = RequestMethod.GET)
-    public ResponseEntity<?> redirectShortenUrl(@PathVariable String shorentUrlKey) {
-        return ResponseEntity.ok().body(null);
+    @RequestMapping(value = "/{shortenUrlKey}", method = RequestMethod.GET)
+    public ResponseEntity<?> redirectShortenUrl(@PathVariable String shortenUrlKey) throws URISyntaxException {
+
+        String originalUrl = shortenUrlService.getOriginalUrlByShortenUrlKey(shortenUrlKey);
+
+        URI redirectUri = new URI(originalUrl);
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setLocation(redirectUri);
+
+        return new ResponseEntity(httpHeaders, HttpStatus.MOVED_PERMANENTLY);
     }
 
     /**
