@@ -5,6 +5,7 @@ import kr.co.shorteurlservice.api.domain.ShortenUrlRepository;
 import kr.co.shorteurlservice.application.request.ShortenUrlCreateRequestDto;
 import kr.co.shorteurlservice.application.request.ShortenUrlInformationDto;
 import kr.co.shorteurlservice.application.response.ShortenUrlCreateResponseDto;
+import kr.co.shorteurlservice.core.aop.endpoint.exception.LackOfshortenUrlKeyException;
 import kr.co.shorteurlservice.core.aop.endpoint.exception.NotFoundShortenUrlException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,7 +24,8 @@ public class ShortenUrlService {
     public ShortenUrlCreateResponseDto generateShortenUrl(ShortenUrlCreateRequestDto shortenUrlCreateRequestDto) {
 
         String originalUrl = shortenUrlCreateRequestDto.getOriginalUrl();
-        String shortenUrlKey = ShortenUrl.generateShortenUrlKey();
+//        String shortenUrlKey = ShortenUrl.generateShortenUrlKey();
+        String shortenUrlKey = getUniqueShortenUrlKey();
 
         ShortenUrl shortenUrl = new ShortenUrl(originalUrl, shortenUrlKey);
         shortenUrlRepository.saveShortenUrl(shortenUrl);
@@ -61,5 +63,21 @@ public class ShortenUrlService {
         String originalUrl = shortenUrl.getOriginalUrl();
 
         return originalUrl;
+    }
+
+    private String getUniqueShortenUrlKey() {
+        final int MAX_RETRY_COUNT = 5;
+        int count = 0;
+
+        while(count++ < MAX_RETRY_COUNT) {
+            String shortenUrlKey = ShortenUrl.generateShortenUrlKey();
+            ShortenUrl shortenUrl = shortenUrlRepository.findShortenUrlByShortenUrlKey(shortenUrlKey);
+
+            if(null == shortenUrl) {
+                return shortenUrlKey;
+            }
+        }
+
+        throw new LackOfshortenUrlKeyException();
     }
 }
