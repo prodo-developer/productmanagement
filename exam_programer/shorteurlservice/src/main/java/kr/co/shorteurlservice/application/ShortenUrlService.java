@@ -5,7 +5,7 @@ import kr.co.shorteurlservice.api.domain.ShortenUrlRepository;
 import kr.co.shorteurlservice.application.request.ShortenUrlCreateRequestDto;
 import kr.co.shorteurlservice.application.request.ShortenUrlInformationDto;
 import kr.co.shorteurlservice.application.response.ShortenUrlCreateResponseDto;
-import kr.co.shorteurlservice.core.aop.endpoint.exception.LackOfshortenUrlKeyException;
+import kr.co.shorteurlservice.core.aop.endpoint.exception.LackOfShortenUrlKeyException;
 import kr.co.shorteurlservice.core.aop.endpoint.exception.NotFoundShortenUrlException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -78,6 +78,6 @@ public class ShortenUrlService {
             }
         }
 
-        throw new LackOfshortenUrlKeyException();
+        throw new LackOfShortenUrlKeyException();
     }
 }

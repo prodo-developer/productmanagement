@@ -1,6 +1,6 @@
 package kr.co.shorteurlservice.core.aop.endpoint;
 
-import kr.co.shorteurlservice.core.aop.endpoint.exception.LackOfshortenUrlKeyException;
+import kr.co.shorteurlservice.core.aop.endpoint.exception.LackOfShortenUrlKeyException;
 import kr.co.shorteurlservice.core.aop.endpoint.exception.NotFoundShortenUrlException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,8 +15,8 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>("단축 URL을 찾지 못했습니다.", HttpStatus.NOT_FOUND);
     }
     
-    @ExceptionHandler(LackOfshortenUrlKeyException.class)
-    public ResponseEntity<String> handleLackOfShortenUrlKeyException(LackOfshortenUrlKeyException ex) {
+    @ExceptionHandler(LackOfShortenUrlKeyException.class)
+    public ResponseEntity<String> handleLackOfShortenUrlKeyException(LackOfShortenUrlKeyException ex) {
         return new ResponseEntity<>("단축 URL 자원이 부족합니다.", HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }
